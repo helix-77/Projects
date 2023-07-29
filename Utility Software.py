@@ -4,7 +4,16 @@ import base64
 
 window = tk.Tk()
 window.title("Utility Software")
-window.resizable(True, True)
+window.resizable(False, False)
+
+style=ttk.Style()
+style.configure('TFrame' )
+style.configure('TLabel', font=('Calibri', 12) )
+style.configure('TButton', font=('Calibri', 12) )
+style.configure('TEntry', font=('Calibri', 13))
+
+
+padding_btn = {'padx': 25, 'pady': 30, 'ipadx':20, 'ipady':15}
 
 # Arithmetic Calculation
 def arith_btn_pressed():
@@ -49,10 +58,10 @@ def temp_btn_pressed():
     var=tk.IntVar()  # IntVar() to hold the selected option value
     var.set(1)
     option1=ttk.Radiobutton(master=new_win, variable=var, text="Celsius to Fahrenheit", value=1)
-    option1.grid(row=0, column=0)
+    option1.grid(row=0, column=0, padx=5, pady=2)
 
     option2=ttk.Radiobutton(master=new_win, variable=var, text="Fahrenheit to Celsius", value=2)
-    option2.grid(row=1, column=0)
+    option2.grid(row=1, column=0,padx=5, pady=2)
 
     entry=ttk.Entry(master=new_win, width=20)
     entry.grid(row=2, column=0,padx=20, pady=10)
@@ -80,18 +89,18 @@ def bmi_btn_pressed():
     frame1.pack()
 
     label_height= ttk.Label(master=frame1, text="Height : ")
-    label_height.grid(row=0, column=0)
+    label_height.grid(row=0, column=0, padx=10, pady=10)
     entry_height=ttk.Entry(master=frame1, width=10)
-    entry_height.grid(row=0, column=1)
+    entry_height.grid(row=0, column=1, padx=10, pady=10)
     label_M=ttk.Label(master=frame1, text="Meter")
-    label_M.grid(row=0, column=2, sticky="w", padx=10)
+    label_M.grid(row=0, column=2, padx=10)
 
     label_weight= ttk.Label(master=frame1, text="Weight : ")
-    label_weight.grid(row=1, column=0)
+    label_weight.grid(row=1, column=0, padx=5, pady=5)
     entry_weight=ttk.Entry(master=frame1, width=10)
-    entry_weight.grid(row=1, column=1)
+    entry_weight.grid(row=1, column=1, padx=5, pady=5)
     label_kg=ttk.Label(master=frame1, text="KG")
-    label_kg.grid(row=1, column=2, sticky="w", padx=10)
+    label_kg.grid(row=1, column=2, padx=10)
 
     frame2=ttk.Frame(master=new_win)
     frame2.pack()
@@ -254,23 +263,34 @@ def base64_btn_pressed():
     text_output = tk.Text(frame2, height=10, width=50, relief="flat")
     text_output.pack()
 
+frame_label=ttk.Frame(window)
+frame_label.pack()
 
-length_btn=ttk.Button(master=window, text="   Length\nConverter", command=length_btn_pressed)
-length_btn.grid(row=0, column=0, padx=25, pady=10)
+label_main=ttk.Label(frame_label, text="Utility Software", font=("Tw Cen MT", 20, "bold"))
+label_main.pack()
+label_main2=ttk.Label(frame_label, text="by HELiX", font=("MADE Evolve Sans EVO", 12))
+label_main2.pack()
 
-temp_btn=ttk.Button(master=window, text="Temperature\n  Converter", command=temp_btn_pressed)
-temp_btn.grid(row=0, column=1, padx=25, pady=10)
 
-currency_btn=ttk.Button(master=window, text=" Currency\nConverter", command=currency_btn_pressed)
-currency_btn.grid(row=0, column=2, padx=25, pady=10)
+frame_main=ttk.Frame(master=window)
+frame_main.pack()
 
-arith_btn=ttk.Button(master=window, text="Arithmetic\nCalculator", command=arith_btn_pressed)
-arith_btn.grid(row=1, column=2, padx=25, pady=10)
+length_btn=ttk.Button(master=frame_main, text="   Length\nConverter", command=length_btn_pressed)
+length_btn.grid(row=0, column=0, **padding_btn)
 
-bmi_btn=ttk.Button(master=window, text="     BMI\nConverter", command=bmi_btn_pressed)
-bmi_btn.grid(row=1, column=1, padx=25, pady=10 )
+temp_btn=ttk.Button(master=frame_main, text="Temperature\n  Converter", command=temp_btn_pressed)
+temp_btn.grid(row=0, column=1,**padding_btn)
 
-base64_btn= ttk.Button(master=window, text="Base64\n  Tool", command=base64_btn_pressed)
-base64_btn.grid(row=1, column=0, padx=25, pady=10)
+currency_btn=ttk.Button(master=frame_main, text=" Currency\nConverter", command=currency_btn_pressed)
+currency_btn.grid(row=0, column=2,**padding_btn)
+
+arith_btn=ttk.Button(master=frame_main, text="Arithmetic\nCalculator", command=arith_btn_pressed)
+arith_btn.grid(row=1, column=2,**padding_btn)
+
+bmi_btn=ttk.Button(master=frame_main, text="     BMI\nConverter", command=bmi_btn_pressed)
+bmi_btn.grid(row=1, column=1, **padding_btn)
+
+base64_btn= ttk.Button(master=frame_main, text="Base64\n  Tool", command=base64_btn_pressed)
+base64_btn.grid(row=1, column=0,**padding_btn)
 
 window.mainloop()
