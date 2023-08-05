@@ -1,6 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
 import base64
+import random
+import string
+
 
 window = tk.Tk()
 window.title("Utility Software")
@@ -263,6 +266,84 @@ def base64_btn_pressed():
     text_output = tk.Text(frame2, height=10, width=50, relief="flat")
     text_output.pack()
 
+# password generator
+def pass_btn_pressed():
+    def generate_password():
+        try:
+            password_length=int(entry_length.get())
+        except ValueError:
+            lbl_result.config(text="Please enter a valid number") # use config to show the result in the app
+            return
+
+        char_sets=[]  # all checkbox selected options will create a character set(list) which will be used to generate random characters
+        if upper_var.get():
+            char_sets.append(string.ascii_uppercase)  # if checkbox value is 1, insert the uppercase letter type to the set
+        if lower_var.get():
+            char_sets.append(string.ascii_lowercase)
+        if digits_var.get():
+            char_sets.append(string.digits)
+        if special_var.get():
+            char_sets.append(string.punctuation)
+
+        if not char_sets:
+            lbl_result.config(text="Please select at least 1 option")
+            return
+
+        # implementation
+        selected_types="".join(char_sets)  # selected_types -> creating a  string of selected options from the char_set list
+        password="".join(random.choice(selected_types) for i in range(password_length))  
+        """ here,
+            randomly generating characters from the selected types using random() function and for loop,
+            then concateting  it to a string using join() function """
+
+        #show result
+        lbl_result.config(text="Generated Password: "+ password)
+
+    new_win=tk.Toplevel()
+    new_win.title("Password Generator")
+    new_win.resizable(False,False)
+
+    pad = {'padx': 30, 'pady': 15}
+
+    label_top=ttk.Label(new_win, text="Password Generator", font=("MADE Evolve Sans EVO", 15, "bold"))
+    label_top.pack(**pad)
+
+    lbl_length = ttk.Label(new_win, text="Password Length:")
+    lbl_length.pack(padx=25)
+    entry_length=ttk.Entry(new_win)
+    entry_length.pack(padx=25)
+
+    frame2=tk.Frame(new_win)
+    frame2.pack(**pad)
+    lbl_checkbox = ttk.Label(frame2, text="Include options: ")
+    lbl_checkbox.pack(padx=25)
+
+    upper_var=tk.IntVar()
+    upper_chk_btn=ttk.Checkbutton(frame2, text="Upper case letters", variable=upper_var)
+    upper_chk_btn.pack(padx=25)
+
+    lower_var=tk.IntVar()
+    lower_chk_btn=ttk.Checkbutton(frame2, text="Lower case letters", variable=lower_var)
+    lower_chk_btn.pack(padx=25)
+
+    digits_var=tk.IntVar()
+    digits_chk_btn=ttk.Checkbutton(frame2, text="Digits", variable=digits_var)
+    digits_chk_btn.pack(padx=25, anchor=tk.W)
+
+    special_var=tk.IntVar()
+    special_chk_btn=ttk.Checkbutton(frame2, text="Special characters", variable=special_var)
+    special_chk_btn.pack(padx=25)
+
+    frame_3=tk.Frame(new_win)
+    frame_3.pack(**pad)
+
+    btn_generate = ttk.Button(frame_3, text="Generate Password", command=generate_password)
+    btn_generate.pack(padx=25)
+
+    lbl_result = ttk.Label(frame_3, text="", font=("Tw Cen MT", 12, "bold"))
+    lbl_result.pack(padx=25)
+
+
 frame_label=ttk.Frame(window)
 frame_label.pack()
 
@@ -292,5 +373,10 @@ bmi_btn.grid(row=1, column=1, **padding_btn)
 
 base64_btn= ttk.Button(master=frame_main, text="Base64\n  Tool", command=base64_btn_pressed)
 base64_btn.grid(row=1, column=0,**padding_btn)
+
+pass_btn= ttk.Button(master=frame_main, text="Password\nGenerator", command=pass_btn_pressed)
+pass_btn.grid(row=2, column=0,**padding_btn)
+
+#age calculator
 
 window.mainloop()
