@@ -1,8 +1,10 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import StringVar, ttk, messagebox, filedialog
 import base64
 import random
 import string
+from datetime import date
+from pytube import YouTube
 
 
 window = tk.Tk()
@@ -20,26 +22,64 @@ padding_btn = {'padx': 25, 'pady': 30, 'ipadx':20, 'ipady':15}
 
 # Arithmetic Calculation
 def arith_btn_pressed():
-    def evaluate():
-        value=eval(entry.get())
-        lbl_result["text"]="Result: " + str(value)
+    def evaluate_expression():
+        try:
+            expression = entry.get()
+            result = eval(expression)
+            result_label.config(text=f"{result}")
+        except Exception:
+            result_label.config(text="Error")
 
-    new_win=tk.Toplevel() # to create new window
+
+    def clear_input():
+        entry.delete(0, tk.END)
+        result_label.config(text="")
+
+    new_win = tk.Toplevel()
     new_win.title("Arithmetic Calculator")
-    new_win.resizable(False, False)
-    new_win.focus()  #To focus on the new window by default
+    new_win.geometry("420x440")
 
-    label_input=ttk.Label(master=new_win, text="Input numbers and symbols: ")
-    label_input.grid(row=0, column=0, padx=10, pady=5)
+    frame1=ttk.Frame(new_win)
+    frame1.pack(padx=10, pady=20)
 
-    entry=ttk.Entry(master=new_win, width=20)
-    entry.grid(row=1, column=0, padx=10, pady=5)
+    lbl_display=ttk.Label(master=frame1, text="Display", justify='left', font=("Arial", 12, "bold"), relief='flat')
+    lbl_display.grid(row=0, column=0, padx=5)
 
-    btn_calc=ttk.Button(master=new_win, text="Calculate", command=evaluate)
-    btn_calc.grid(row=2, column=0, padx=10, pady=5)
+    entry = tk.Entry(frame1, width=30, relief='flat')
+    entry.grid(row=0, column=1, columnspan=3, ipadx=7,)
 
-    lbl_result=ttk.Label(master=new_win, text="")
-    lbl_result.grid(row=3, column=0, padx=10, pady=5)
+    result_lbl = tk.Label(frame1, text="Result", font=("Arial", 12, "bold"))
+    result_lbl.grid(row=1, column=0, pady=5)
+
+    result_label = tk.Label(frame1, text="", relief='flat', bg="white", anchor='w')
+    result_label.grid(row=1, column=1, pady=5, ipadx=97, )
+
+
+    frame2=ttk.Frame(new_win)
+    frame2.pack(padx=10)
+
+    characters = [
+        '7', '8', '9', '/',
+        '4', '5', '6', '*',
+        '1', '2', '3', '-',
+        '0', 'C', '=', '+'
+    ]
+
+    row_val = 0
+    col_val = 0
+
+    for i in characters:
+        if i == 'C':
+            ttk.Button(frame2, text=i,  command=clear_input).grid(row=row_val, column=col_val, ipady=25)
+        elif i == '=':
+            ttk.Button(frame2, text=i, command=evaluate_expression).grid(row=row_val, column=col_val ,ipady=25)
+        else:
+            ttk.Button(frame2, text=i, command=lambda b=i: entry.insert(tk.END, b)).grid(row=row_val, column=col_val,ipady=25)
+        
+        col_val +=1
+        if col_val > 3:
+            col_val = 0
+            row_val += 1
 
 # Temperature Converter
 def temp_btn_pressed():
@@ -57,23 +97,27 @@ def temp_btn_pressed():
     new_win=tk.Toplevel()
     new_win.title("Temperature Converter")
     new_win.resizable(False, False)
+    new_win.geometry("350x280")
+    
+    lbl_title=ttk.Label(master=new_win, text="Temperature Converter", font=("Arial", 14, "bold"))
+    lbl_title.pack(padx=10, pady=20)
 
     var=tk.IntVar()  # IntVar() to hold the selected option value
     var.set(1)
     option1=ttk.Radiobutton(master=new_win, variable=var, text="Celsius to Fahrenheit", value=1)
-    option1.grid(row=0, column=0, padx=5, pady=2)
+    option1.pack(padx=5, pady=5)
 
     option2=ttk.Radiobutton(master=new_win, variable=var, text="Fahrenheit to Celsius", value=2)
-    option2.grid(row=1, column=0,padx=5, pady=2)
+    option2.pack(padx=5, pady=5)
 
     entry=ttk.Entry(master=new_win, width=20)
-    entry.grid(row=2, column=0,padx=20, pady=10)
+    entry.pack(padx=20, pady=10)
 
     btn_submit=ttk.Button(master=new_win, text="Submit", command=selected_option)
-    btn_submit.grid(row=3, column=0,padx=20, pady=10)
+    btn_submit.pack(padx=20, pady=10)
 
     label_result=ttk.Label(master=new_win, font=("Arial", 12, "bold"))
-    label_result.grid(row=4,column=0,padx=20, pady=10)
+    label_result.pack(padx=20, pady=10)
 
 # bmi
 def bmi_btn_pressed():
@@ -87,6 +131,10 @@ def bmi_btn_pressed():
     new_win=tk.Toplevel()
     new_win.title("BMI converter")
     new_win.resizable(False,False)
+    new_win.geometry("350x250")
+
+    lbl_title=ttk.Label(master=new_win, text="BMI Calculator", font=("Arial", 14, "bold"))
+    lbl_title.pack(padx=10, pady=20)
 
     frame1=ttk.Frame(master=new_win)
     frame1.pack()
@@ -144,9 +192,15 @@ def currency_btn_pressed():
 
     new_win = tk.Toplevel()
     new_win.title("Currency Converter")
+    new_win.resizable(False,False)
+    new_win.geometry("350x280")
+    
+    label_title = ttk.Label(master=new_win, text="Currency Converter", font=("Arial", 14, "bold"))
+    label_title.pack(padx=10, pady=20)
+    
     frame1=tk.Frame(master=new_win)
     frame1.pack()
-
+    
     label_amount = tk.Label(master=frame1, text="Amount:")
     label_amount.grid(row=0 , column=0, padx=5, pady=5, sticky="e")
     entry_amount = ttk.Entry(master=frame1, width=15)
@@ -167,7 +221,7 @@ def currency_btn_pressed():
     frame2.pack()
 
     convert_button = ttk.Button(master=frame2, text="Convert", command=convert_currency)
-    convert_button.grid(pady=5)
+    convert_button.grid(pady=15)
     result_label = ttk.Label(master=frame2, text="")
     result_label.grid(pady=5)
 
@@ -183,6 +237,8 @@ def length_btn_pressed():
 
     new_win = tk.Toplevel()
     new_win.title("Length Converter")
+    new_win.resizable(False,False)
+    new_win.geometry("350x280")
 
     def convert_length():
         value = float(entry_value.get())
@@ -193,29 +249,35 @@ def length_btn_pressed():
         label_result["text"] = "Converted Value: "+ str(round(result, 4))
 
 
-    label_value = ttk.Label(new_win, text="Value:")
-    label_value.grid(row=0,column=0, padx=5, pady=5)
+    frame=ttk.Frame(master=new_win)
+    frame.pack()
+    
+    lbl_title=ttk.Label(master=frame, text="Length Converter", font=("Arial", 14, "bold"))
+    lbl_title.grid(row=0,column=0, padx=10, pady=10, columnspan=2)
+    
+    label_value = ttk.Label(frame, text="Value:")
+    label_value.grid(row=1,column=0, padx=10, pady=10)
 
-    entry_value = ttk.Entry(new_win)
-    entry_value.grid(row=0,column=1, padx=5, pady=5)
+    entry_value = ttk.Entry(frame)
+    entry_value.grid(row=1,column=1, padx=10, pady=10)
 
-    label_from_unit = ttk.Label(new_win, text="From Unit:")
-    label_from_unit.grid(row=1,column=0, padx=5, pady=5)
+    label_from_unit = ttk.Label(frame, text="From Unit:")
+    label_from_unit.grid(row=2,column=0, padx=10, pady=10)
 
-    cmb_from_unit = ttk.Combobox(new_win, values=list(CONVERSION_FACTORS.keys()))
-    cmb_from_unit.grid(row=1,column=1, padx=5, pady=5)
+    cmb_from_unit = ttk.Combobox(frame, values=list(CONVERSION_FACTORS.keys()))
+    cmb_from_unit.grid(row=2,column=1, padx=10, pady=10)
 
-    label_to_unit = ttk.Label(new_win, text="To Unit:")
-    label_to_unit.grid(row=2,column=0, padx=5, pady=5)
+    label_to_unit = ttk.Label(frame, text="To Unit:")
+    label_to_unit.grid(row=3,column=0, padx=10, pady=10)
 
-    cmb_to_unit = ttk.Combobox(new_win, values=list(CONVERSION_FACTORS.keys()))
-    cmb_to_unit.grid(row=2,column=1, padx=5, pady=5)
+    cmb_to_unit = ttk.Combobox(frame, values=list(CONVERSION_FACTORS.keys()))
+    cmb_to_unit.grid(row=3,column=1, padx=10, pady=10)
 
-    button_covert = ttk.Button(new_win, text="Convert", command=convert_length)
-    button_covert.grid(row=3,column=0, padx=5, pady=5)
+    button_covert = ttk.Button(frame, text="Convert", command=convert_length)
+    button_covert.grid(row=4,column=0, padx=10, pady=10, columnspan=2)
 
-    label_result = ttk.Label(new_win, text="")
-    label_result.grid(row=3,column=1, padx=5, pady=5)
+    label_result = ttk.Label(frame, text="")
+    label_result.grid(row=5,column=0, padx=10, pady=10, columnspan=2)
 
 # base64
 def base64_btn_pressed():
@@ -294,7 +356,7 @@ def pass_btn_pressed():
         password="".join(random.choice(selected_types) for i in range(password_length))  
         """ here,
             randomly generating characters from the selected types using random() function and for loop,
-            then concateting  it to a string using join() function """
+            then concatenating  it to a string using join() function """
 
         #show result
         lbl_result.config(text="Generated Password: "+ password)
@@ -302,6 +364,7 @@ def pass_btn_pressed():
     new_win=tk.Toplevel()
     new_win.title("Password Generator")
     new_win.resizable(False,False)
+    new_win.geometry("350x350")
 
     pad = {'padx': 30, 'pady': 15}
 
@@ -338,10 +401,125 @@ def pass_btn_pressed():
     frame_3.pack(**pad)
 
     btn_generate = ttk.Button(frame_3, text="Generate Password", command=generate_password)
-    btn_generate.pack(padx=25)
+    btn_generate.pack(padx=25, pady=3)
 
     lbl_result = ttk.Label(frame_3, text="", font=("Tw Cen MT", 12, "bold"))
-    lbl_result.pack(padx=25)
+    lbl_result.pack(padx=25, pady=5)
+
+# age calculator
+def age_btn_pressed():
+    def calculate_age():
+        try:
+            today = date.today()
+            
+            current_date = today.day
+            current_month = today.month
+            current_year = today.year
+            
+            birth_date = int(entry_day.get())
+            birth_month = int(entry_month.get())
+            birth_year = int(entry_year.get())
+            
+            age_year = current_year - birth_year
+            age_month = current_month - birth_month
+            age_date = current_date - birth_date
+            
+            if age_date < 0:
+                age_month -= 1
+                age_date += 30  # Assuming a month has 30 days
+            
+            if age_month < 0:
+                age_year -= 1
+                age_month += 12
+            
+            if age_year < 0:
+                lbl_result.config(text="Invalid input")
+            else:
+                lbl_result.config(text=f"Age: {age_year} years, {age_month} months, {age_date} days")
+            
+        except ValueError:
+            lbl_result.config(text="Invalid input")
+
+
+    # main
+    new_window= tk.Toplevel()
+    new_window.title('Age Calculator')
+    new_window.resizable(False,False)
+
+
+    lbl_title=ttk.Label(master=new_window, text="Age Calculator", font=("Tw Cen MT", 20, "bold"))
+    lbl_title.pack(padx=50, pady=15)
+
+    frame1=tk.Frame(master=new_window)
+    frame1.pack(padx=50, pady=15)
+
+    padding_frame1 = {'padx': 10, 'pady': 5}
+    lbl_day = ttk.Label(frame1, text='Day:')
+    lbl_day.grid(row=0, column=0, **padding_frame1)
+    lbl_month = ttk.Label(frame1, text='Month:')
+    lbl_month.grid(row=0, column=1, **padding_frame1)
+    lbl_year = ttk.Label(frame1, text='Year:')
+    lbl_year.grid(row=0, column=2, **padding_frame1)
+
+    entry_day = ttk.Entry(frame1, width=15)
+    entry_day.grid(row=1, column=0,**padding_frame1)
+    entry_month = ttk.Entry(frame1, width=15)
+    entry_month.grid(row=1, column=1,**padding_frame1)
+    entry_year = ttk.Entry(frame1, width=15)
+    entry_year.grid(row=1, column=2,**padding_frame1)
+
+    btn_calc = ttk.Button(new_window, text='Calculate',command=calculate_age)
+    btn_calc.pack(padx=4, pady=15, ipadx=10, ipady=5)
+
+    lbl_result = ttk.Label(new_window, text='', font=("Tw Cen MT", 14))
+    lbl_result.pack(padx=10, pady=15)
+
+# youtube video downloader
+def yt_btn_pressed():
+    def browse():
+        location = filedialog.askdirectory(initialdir="YOUR DIRECTORY PATH", title="Save Video" )
+        download_Path.set(location)
+        
+    def download():
+        Youtube_link = video_Link.get()
+        download_Folder = download_Path.get()
+        getVideo = YouTube(Youtube_link)
+
+        videoStream = getVideo.streams.first() # selecting the first stream
+        videoStream.download(download_Folder)  # Downloading the video to the destination
+        messagebox.showinfo("Done!", "Download completed and saved in: \n" + download_Folder)
+
+
+    new_win = tk.Toplevel()
+
+    new_win.geometry("490x200")
+    new_win.title("YouTube Video Downloader")
+    new_win.resizable(False, False)
+
+    # Creating the tkinter Variables
+    video_Link = StringVar()
+    download_Path = StringVar()
+
+    lbl_head = tk.Label(new_win,text="YouTube Video Downloader", font=("Berlin Sans FB", 15))
+    lbl_head.grid(row=1, column=0, pady=10, padx=10, columnspan=3)
+
+    lbl_link = tk.Label(new_win, text="YouTube link :", bg="salmon", pady=5, padx=5)
+    lbl_link.grid(row=2, column=0, pady=5, padx=5)
+
+    entry_link = tk.Entry(new_win, width=53, textvariable=video_Link, font="Calibri 11")
+    entry_link.grid(row=2, column=1, pady=5, padx=5, columnspan=2)
+
+    lbl_destination = tk.Label(new_win, text="Destination :", bg="salmon", pady=5, padx=9)
+    lbl_destination.grid(row=3, column=0, pady=5, padx=5)
+
+    entry_dest_path = tk.Entry(new_win, width=40, textvariable=download_Path, font="Calibri 11")
+    entry_dest_path.grid(row=3, column=1, pady=5, padx=5)
+
+    btn_browse = ttk.Button(new_win, text="Browse", command=browse, width=9)
+    btn_browse.grid(row=3, column=2, pady=1, padx=1)
+
+    btn_dwl = ttk.Button(new_win,text="Download",command=download)
+    btn_dwl.grid(row=4, column=1, pady=20, padx=20)
 
 
 frame_label=ttk.Frame(window)
@@ -352,31 +530,37 @@ label_main.pack()
 label_main2=ttk.Label(frame_label, text="by HELiX", font=("MADE Evolve Sans EVO", 12))
 label_main2.pack()
 
-
 frame_main=ttk.Frame(master=window)
 frame_main.pack()
+
+# by helix ^_^
 
 length_btn=ttk.Button(master=frame_main, text="   Length\nConverter", command=length_btn_pressed)
 length_btn.grid(row=0, column=0, **padding_btn)
 
 temp_btn=ttk.Button(master=frame_main, text="Temperature\n  Converter", command=temp_btn_pressed)
-temp_btn.grid(row=0, column=1,**padding_btn)
+temp_btn.grid(row=0, column=2,**padding_btn)
 
 currency_btn=ttk.Button(master=frame_main, text=" Currency\nConverter", command=currency_btn_pressed)
-currency_btn.grid(row=0, column=2,**padding_btn)
+currency_btn.grid(row=2, column=0,**padding_btn)
 
 arith_btn=ttk.Button(master=frame_main, text="Arithmetic\nCalculator", command=arith_btn_pressed)
-arith_btn.grid(row=1, column=2,**padding_btn)
-
-bmi_btn=ttk.Button(master=frame_main, text="     BMI\nConverter", command=bmi_btn_pressed)
-bmi_btn.grid(row=1, column=1, **padding_btn)
+arith_btn.grid(row=1, column=0,**padding_btn)
 
 base64_btn= ttk.Button(master=frame_main, text="Base64\n  Tool", command=base64_btn_pressed)
-base64_btn.grid(row=1, column=0,**padding_btn)
+base64_btn.grid(row=1, column=1,**padding_btn)
+
+bmi_btn=ttk.Button(master=frame_main, text="     BMI\nConverter", command=bmi_btn_pressed)
+bmi_btn.grid(row=1, column=2, **padding_btn)
 
 pass_btn= ttk.Button(master=frame_main, text="Password\nGenerator", command=pass_btn_pressed)
-pass_btn.grid(row=2, column=0,**padding_btn)
+pass_btn.grid(row=0, column=1,**padding_btn)
 
-#age calculator
+age_btn=ttk.Button(master=frame_main, text="     Age\nCalculator", command=age_btn_pressed)
+age_btn.grid(row=2, column=1,**padding_btn)
+
+yt_btn=ttk.Button(master=frame_main, text="   YouTube\nDownloader", command=yt_btn_pressed)
+yt_btn.grid(row=2, column=2,**padding_btn)
+
 
 window.mainloop()
