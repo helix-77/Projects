@@ -10,6 +10,7 @@ from pytube import YouTube
 window = tk.Tk()
 window.title("Utility Software")
 window.resizable(False, False)
+# window.geometry("620x570")
 
 style=ttk.Style()
 style.configure('TFrame' )
@@ -20,7 +21,7 @@ style.configure('TEntry', font=('Calibri', 13))
 
 padding_btn = {'padx': 25, 'pady': 30, 'ipadx':20, 'ipady':15}
 
-# Arithmetic Calculation
+# Arithmetic Calculator
 def arith_btn_pressed():
     def evaluate_expression():
         try:
@@ -245,8 +246,8 @@ def length_btn_pressed():
         from_unit = cmb_from_unit.get()
         to_unit = cmb_to_unit.get()
 
-        result = value * CONVERSION_FACTORS[from_unit] / CONVERSION_FACTORS[to_unit]
-        label_result["text"] = "Converted Value: "+ str(round(result, 4))
+        result = value *  CONVERSION_FACTORS[to_unit] / CONVERSION_FACTORS[from_unit]
+        label_result["text"] = "Converted Value: "+ str(round(result, 8))
 
 
     frame=ttk.Frame(master=new_win)
@@ -276,7 +277,7 @@ def length_btn_pressed():
     button_covert = ttk.Button(frame, text="Convert", command=convert_length)
     button_covert.grid(row=4,column=0, padx=10, pady=10, columnspan=2)
 
-    label_result = ttk.Label(frame, text="")
+    label_result = ttk.Label(frame, text="", font=("Arial", 12, "bold"))
     label_result.grid(row=5,column=0, padx=10, pady=10, columnspan=2)
 
 # base64
@@ -523,29 +524,29 @@ def yt_btn_pressed():
 
 
 frame_label=ttk.Frame(window)
-frame_label.pack()
+frame_label.pack(pady=15)
 
 label_main=ttk.Label(frame_label, text="Utility Software", font=("Tw Cen MT", 20, "bold"))
-label_main.pack()
+label_main.pack(pady=10)
 label_main2=ttk.Label(frame_label, text="by HELiX", font=("MADE Evolve Sans EVO", 12))
 label_main2.pack()
 
 frame_main=ttk.Frame(master=window)
-frame_main.pack()
+frame_main.pack(pady=20)
 
 # by helix ^_^
 
 length_btn=ttk.Button(master=frame_main, text="   Length\nConverter", command=length_btn_pressed)
-length_btn.grid(row=0, column=0, **padding_btn)
+length_btn.grid(row=0, column=2, **padding_btn)
 
 temp_btn=ttk.Button(master=frame_main, text="Temperature\n  Converter", command=temp_btn_pressed)
-temp_btn.grid(row=0, column=2,**padding_btn)
+temp_btn.grid(row=1, column=0,**padding_btn)
 
 currency_btn=ttk.Button(master=frame_main, text=" Currency\nConverter", command=currency_btn_pressed)
 currency_btn.grid(row=2, column=0,**padding_btn)
 
 arith_btn=ttk.Button(master=frame_main, text="Arithmetic\nCalculator", command=arith_btn_pressed)
-arith_btn.grid(row=1, column=0,**padding_btn)
+arith_btn.grid(row=0, column=0,**padding_btn)
 
 base64_btn= ttk.Button(master=frame_main, text="Base64\n  Tool", command=base64_btn_pressed)
 base64_btn.grid(row=1, column=1,**padding_btn)
